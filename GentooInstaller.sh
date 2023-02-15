@@ -32,6 +32,7 @@ if [[ $EUID = 0 ]]; then
 		MakeDisk
 	fi
 	fi
+	fi
 fi
 }
 
