@@ -113,56 +113,64 @@ read timezone
 if [ -z $timezone ]; then
 	echo "Selected one by default... Continue... "
 else
-	echo "Selected: $timezone"
+	echo 'Selected:' << EOF
+	$timezone
+EOF
 fi
 echo "Generating LocalTime"
-chroot /mnt/gentoo /bin/bash -c 'ln -sf /usr/share/zoneinfo/$timezone /etc/localtime'
-echo "Done!"
-nano -w /mnt/gentoo/etc/locale.gen
-chroot /mnt/gentoo /bin/bash -c 'locale-gen'
-echo "Installing kernel...."
-chroot /mnt/gentoo /bin/bash -c 'emerge --oneshot sys-kernel/gentoo-kernel-bin'
-chroot /mnt/gentoo /bin/bash -c 'emerge --oneshot sys-kernel/linux-headers'
-chroot /mnt/gentoo /bin/bash -c 'emerge --oneshot sys-fs/genfstab'
-chroot /mnt/gentoo /bin/bash -c 'emerge --autounmask=y --autounmask-write sys-kernel/linux-firmware'
-chroot /mnt/gentoo /usr/sbin/dispatch-conf
-chroot /mnt/gentoo /bin/bash -c 'emerge --oneshot sys-kernel/linux-firmware'
-chroot /mnt/gentoo /bin/bash -c 'emerge --oneshot sys-kernel/genkernel'
-echo "Generating fstab file!"
-chroot /mnt/gentoo /bin/bash -c 'genfstab -U / > /etc/fstab'
-echo "Generating kernel files..."
-chroot /mnt/gentoo /bin/bash -c 'genkernel all'
-ls /mnt/gentoo/boot/vmlinu* /mnt/gentoo/boot/initramfs*
-echo "Cleaning..."
-chroot /mnt/gentoo /bin/bash -c 'emerge --depclean'
-echo "Write hostname: "
-read hostname
+chroot /mnt/gentoo /bin/bash -c << EOF
+ln -sf /usr/share/zoneinfo/$timezone /etc/localtime &&
+echo "Done!" &&
+nano -w /mnt/gentoo/etc/locale.gen &&
+locale-gen &&
+echo "Installing kernel...." &&
+emerge --oneshot sys-kernel/gentoo-kernel-bin &&
+emerge --oneshot sys-kernel/linux-headers &&
+emerge --oneshot sys-fs/genfstab &&
+emerge --autounmask=y --autounmask-write sys-kernel/linux-firmware &&
+dispatch-conf &&
+emerge --oneshot sys-kernel/linux-firmware &&
+emerge --oneshot sys-kernel/genkernel &&
+echo "Generating fstab file!" &&
+genfstab -U / > /etc/fstab &&
+echo "Generating kernel files..." &&
+genkernel all &&
+ls /mnt/gentoo/boot/vmlinu* /mnt/gentoo/boot/initramfs* &&
+echo "Cleaning..." &&
+emerge --depclean &&
+echo "Write hostname: " &&
+EOF
+read hostname 
 if [ -z $hostname ]; then
 	echo "Selected one by default... Continue... "
 else
 	echo "Selected: $(hostname)"
 fi
+
 echo $hostname > /mnt/gentoo/etc/hostname
-chroot /mnt/gentoo /bin/bash -c 'emerge --oneshot networkmanager nm-applet pulseaudio dhpcd'
-chroot /mnt/gentoo /bin/bash -c 'systemctl enable --now NetworkManager'
-echo "Creating hosts"
-touch /mnt/gentoo/etc/hosts
-chroot /mnt/gentoo /bin/bash -c 'emerge --oneshot sys-apps/pcmciautils'
-chroot /mnt/gentoo /bin/bash -c 'passwd'
-chroot /mnt/gentoo /bin/bash -c 'useradd -m $username'
-chroot /mnt/gentoo /bin/bash -c 'passwd $username'
-chroot /mnt/gentoo /bin/bash -c 'usermod -aG wheel $username'
-chroot /mnt/gentoo /bin/bash -c 'systemd-firstboot --prompt --setup-machine-id'
-chroot /mnt/gentoo /bin/bash -c 'systemctl preset-all'
+chroot /mnt/gentoo /bin/bash -c << EOF 
+emerge --oneshot networkmanager nm-applet pulseaudio dhpcd &&
+systemctl enable --now NetworkManager &&
+echo "Creating hosts" &&
+emerge --oneshot sys-apps/pcmciautils && 
+passwd &&
+useradd -m $username &&
+passwd $username &&
+usermod -aG wheel $username &&
+systemd-firstboot --prompt --setup-machine-id &&
+systemctl preset-all &&
+EOF
+
 echo "Installing Wireless support"
-arch-chroot /mnt/gentoo /bin/bash -c 'emerge --oneshot net-wireless/iw net-wireless/wpa_supplicant'
-echo "Installing GRUB"
-echo 'GRUB_PLATFORMS="efi-64"' >> /mnt/gentoo/etc/portage/make.conf
-chroot /mnt/gentoo /bin/bash -c 'emerge --oneshot --verbose sys-boot/grub'
-chroot /mnt/gentoo /bin/bash -c 'emerge --update --newuse --verbose sys-boot/grub'
+arch-chroot /mnt/gentoo /bin/bash -c << EOF
+emerge --oneshot net-wireless/iw net-wireless/wpa_supplicant' &&
+echo "Installing GRUB" &&
+echo 'GRUB_PLATFORMS="efi-64"' >> /mnt/gentoo/etc/portage/make.conf &&
+emerge --oneshot --verbose sys-boot/grub &&
+emerge --update --newuse --verbose sys-boot/grub &&
 echo "Installing bootloader!"
-chroot /mnt/gentoo /bin/bash -c 'grub-install --target=x86_64-efi --efi-directory=/boot'
-chroot /mnt/gentoo /bin/bash -c 'grub-mkconfig -o /boot/grub/grub.cfg'
+grub-install --target=x86_64-efi --efi-directory=/boot &&
+grub-mkconfig -o /boot/grub/grub.cfg &&
 echo "Installation complete!"	
 }
 
