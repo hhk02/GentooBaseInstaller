@@ -74,6 +74,7 @@ if [[ $EUID = 0 ]]; then
 	echo "Syncing repos!"
 	chroot /mnt/gentoo /bin/bash -c 'emerge --sync'
 	chroot /mnt/gentoo /bin/bash -c 'emerge --sync --quiet'
+	chroot /mnt/gentoo /bin/bash -c 'emerge --ask --verbose --update --deep --newuse @world'
 	echo "Showing profiles"
 	chroot /mnt/gentoo /bin/bash -c 'eselect profile list'
 	echo "Select a profile: "
