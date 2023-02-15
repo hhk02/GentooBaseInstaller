@@ -9,6 +9,8 @@ root_partition=""
 selection="1"
 hostname="Gentoo"
 timezone="Europe/Madrid"
+username=""
+password=""
 if [[ $EUID = 0 ]]; then
 	echo "Welcome to the Gentoo Installer by hhk02 THIS IT'S A EXPERIMENTAL BUILD SO I'AM NOT RESPONSABLE A DATA LOSE!"
 	echo "For start, please specify your network adapter for connect to Internet."
@@ -129,6 +131,9 @@ if [[ $EUID = 0 ]]; then
 	touch /mnt/gentoo/etc/hosts
 	chroot /mnt/gentoo /bin/bash -c 'emerge --oneshot sys-apps/pcmciautils'
 	chroot /mnt/gentoo /bin/bash -c 'passwd'
+	chroot /mnt/gentoo /bin/bash -c "useradd -m $(username)"
+	chroot /mnt/gentoo /bin/bash -c "passwd $(username)"
+	chroot /mnt/gentoo /bin/bash -c "usermod -aG wheel $(username)"
 	chroot /mnt/gentoo /bin/bash -c 'systemd-firstboot --prompt --setup-machine-id'
 	chroot /mnt/gentoo /bin/bash -c 'systemctl preset-all'
 	echo "Installing Wireless support"
