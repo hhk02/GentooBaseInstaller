@@ -32,7 +32,6 @@ if [[ $EUID = 0 ]]; then
 		MakeDisk
 	fi
 	fi
-	fi
 fi
 }
 
@@ -53,6 +52,7 @@ if [ -z $efi_partition ]; then
 else
 	echo "Root partiiton ex /dev/sda2:"
 	read root_partition
+	Install
 fi
 fi
 echo "Erasing and creating partition: EFI Partition"
