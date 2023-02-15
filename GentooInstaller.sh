@@ -31,8 +31,6 @@ if [[ $EUID = 0 ]]; then
 	else
 		MakeDisk
 	fi
-else
-echo "You must run this as root!"
 fi
 }
 
