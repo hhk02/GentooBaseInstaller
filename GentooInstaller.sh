@@ -54,11 +54,11 @@ if [[ $EUID = 0 ]]; then
 	echo "Extracting"
 	tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner
 	echo "Detecting CPU Cores for /mnt/gentoo/etc/portage/make.conf"
-	sed -i 's/COMMON_CFLAGS="-O2 -pipe"/COMMON_CFLAGS="-march=native -O2 -pipe"' /mnt/gentoo/etc/portage/make.conf
-	echo "MAKEOPTS="-j$(nproc)"" >> /mnt/gentoo/etc/portage/make.conf
+	sed -i "s/COMMON_CFLAGS=-O2 -pipe/COMMON_CFLAGS=-march=native -O2 -pipe" /mnt/gentoo/etc/portage/make.conf
+	echo "MAKEOPTS=-j$(nproc)" >> /mnt/gentoo/etc/portage/make.conf
 	echo "Adding pre-build packages repository EXPERIMENTAL! "
 	echo -e "[binhost]\npriority = 9999\nsync-uri = https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/" > /mnt/gentoo/etc/portage/binrepos.conf
-	echo "EMERGE_DEFAULT_OPTS="--binpkg-respect-use=y --getbinpkg=y"" >> /mnt/gentoo/etc/portage/make.conf
+	echo "EMERGE_DEFAULT_OPTS=--binpkg-respect-use=y --getbinpkg=y" >> /mnt/gentoo/etc/portage/make.conf
 	mkdir --parents /mnt/gentoo/etc/portage/repos.conf
 	echo "Copying default repository configuration!"
 	cp -v /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
