@@ -81,7 +81,7 @@ if [[ $EUID = 0 ]]; then
 	if [ -z $selection ]; then
 		echo "Selected one by default... Continue... "
 	else
-		chroot /mnt/gentoo /bin/bash -c "eselect profile set $selection"
+		chroot /mnt/gentoo /bin/bash -c "eselect profile set $(selection)"
 	fi
 	echo "Write the timezone: "
 	read timezone
