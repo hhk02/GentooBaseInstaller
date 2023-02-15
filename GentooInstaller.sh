@@ -22,21 +22,22 @@ if [[ $EUID = 0 ]]; then
 		echo "Connection Successfull!"
 		MakeDisk
 	else
+	read network_device
+	if [ -z  $network_device ]; then
+		echo "Invalid device! Try again...."
 		read network_device
-		if [ -z  $network_device ]; then
-			echo "Invalid device! Try again...."
-			read network_device
-			net-setup $network_device
-			dhcpcd $network_device
-		else
-			MakeDisk
-		fi
+		net-setup $network_device
+		dhcpcd $network_device
+	else
+		MakeDisk
 	fi
 else
-	echo "You must run this as root!"
+echo "You must run this as root!"
 fi
 }
+
 MakeDisk () {
+
 echo "Write your disk device ex: /dev/sda"
 read disk
 if [ -z $disk ]; then
@@ -60,7 +61,9 @@ echo "Erasing and creating partition: Root partition"
 mkfs.ext4 $root_partition
 clear
 }
+
 Install () {
+
 echo "Creating /mnt/gentoo!"
 mkdir --parents /mnt/gentoo
 echo "Mounting root partition!"
@@ -162,4 +165,5 @@ chroot /mnt/gentoo /bin/bash -c 'grub-install --target=x86_64-efi --efi-director
 chroot /mnt/gentoo /bin/bash -c 'grub-mkconfig -o /boot/grub/grub.cfg'
 echo "Installation complete!"	
 }
+
 Welcome
