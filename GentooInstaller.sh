@@ -6,7 +6,7 @@ network_device=""
 disk=""
 efi_partition=""
 root_partition=""
-selection="1"
+selection="12"
 hostname="Gentoo"
 timezone="Europe/Madrid"
 username=""
@@ -84,17 +84,17 @@ if [[ $EUID = 0 ]]; then
 	if [ -z $selection ]; then
 		echo "Selected one by default... Continue... "
 	else
-		chroot /mnt/gentoo /bin/bash -c "eselect profile set $(selection)"
+		chroot /mnt/gentoo /bin/bash -c "eselect profile set $selection"
 	fi
 	echo "Write the timezone: "
 	read timezone
 	if [ -z $timezone ]; then
 		echo "Selected one by default... Continue... "
 	else
-		echo "Selected: $(timezone)"
+		echo "Selected: $timezone"
 	fi
 	echo "Generating LocalTime"
-	chroot /mnt/gentoo /bin/bash -c "ln -sf /usr/share/zoneinfo/$(timezone) /etc/localtime"
+	chroot /mnt/gentoo /bin/bash -c "ln -sf /usr/share/zoneinfo/$timezone /etc/localtime"
 	echo "Done!"
 	echo "es_ES.UTF-8 UTF-8"
 	echo "es_MX.UTF-8 UTF-8"
@@ -131,9 +131,9 @@ if [[ $EUID = 0 ]]; then
 	touch /mnt/gentoo/etc/hosts
 	chroot /mnt/gentoo /bin/bash -c 'emerge --oneshot sys-apps/pcmciautils'
 	chroot /mnt/gentoo /bin/bash -c 'passwd'
-	chroot /mnt/gentoo /bin/bash -c "useradd -m $(username)"
-	chroot /mnt/gentoo /bin/bash -c "passwd $(username)"
-	chroot /mnt/gentoo /bin/bash -c "usermod -aG wheel $(username)"
+	chroot /mnt/gentoo /bin/bash -c "useradd -m $username"
+	chroot /mnt/gentoo /bin/bash -c "passwd $username"
+	chroot /mnt/gentoo /bin/bash -c "usermod -aG wheel $username"
 	chroot /mnt/gentoo /bin/bash -c 'systemd-firstboot --prompt --setup-machine-id'
 	chroot /mnt/gentoo /bin/bash -c 'systemctl preset-all'
 	echo "Installing Wireless support"
