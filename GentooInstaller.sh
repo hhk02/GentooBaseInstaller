@@ -49,13 +49,16 @@ if [[ $EUID = 0 ]]; then
 	echo "Mounting root partition!"
 	mount $root_partition /mnt/gentoo
 	cd /mnt/gentoo
-	echo "Installing Gentoo with SystemD PD: He ahi la importancia de SystemD :-)"
+	echo "Installing Gentoo with systemd"
 	wget http://gentoo.mirrors.ovh.net/gentoo-distfiles/releases/amd64/autobuilds/current-stage3-amd64-desktop-systemd/stage3-amd64-desktop-systemd-20230129T164658Z.tar.xz
 	echo "Extracting"
 	tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner
 	echo "Detecting CPU Cores for /mnt/gentoo/etc/portage/make.conf"
 	sed -i 's/COMMON_CFLAGS="-O2 -pipe"/COMMON_CFLAGS="-march=native -O2 -pipe"' /mnt/gentoo/etc/portage/make.conf
 	echo "MAKEOPTS="-j$(nproc)"" >> /mnt/gentoo/etc/portage/make.conf
+	echo "Adding pre-build packages repository EXPERIMENTAL! "
+	echo -e "[binhost]\npriority = 9999\nsync-uri = https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/" > /mnt/gentoo/etc/portage/binrepos.conf
+	echo "EMERGE_DEFAULT_OPTS="--binpkg-respect-use=y --getbinpkg=y"" >> /mnt/gentoo/etc/portage/make.conf
 	mkdir --parents /mnt/gentoo/etc/portage/repos.conf
 	echo "Copying default repository configuration!"
 	cp -v /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
@@ -84,7 +87,7 @@ if [[ $EUID = 0 ]]; then
 	if [ -z $selection ]; then
 		echo "Selected one by default... Continue... "
 	else
-		chroot /mnt/gentoo /bin/bash -c "eselect profile set $selection"
+		chroot /mnt/gentoo /bin/bash -c "eselect profile set "$selection""
 	fi
 	echo "Write the timezone: "
 	read timezone
@@ -94,7 +97,7 @@ if [[ $EUID = 0 ]]; then
 		echo "Selected: $timezone"
 	fi
 	echo "Generating LocalTime"
-	chroot /mnt/gentoo /bin/bash -c "ln -sf /usr/share/zoneinfo/$timezone /etc/localtime"
+	chroot /mnt/gentoo /bin/bash -c 'ln -sf /usr/share/zoneinfo/' "$timezone" '/etc/localtime'
 	echo "Done!"
 	echo "es_ES.UTF-8 UTF-8"
 	echo "es_MX.UTF-8 UTF-8"
@@ -125,15 +128,15 @@ if [[ $EUID = 0 ]]; then
 		echo "Selected: $(hostname)"
 	fi
 	echo $hostname > /mnt/gentoo/etc/hostname
-	chroot /mnt/gentoo /bin/bash -c 'emerge --oneshot net-misc/dhcpcd'
-	chroot /mnt/gentoo /bin/bash -c 'systemctl enable --now dhcpcd'
+	chroot /mnt/gentoo /bin/bash -c 'emerge --oneshot networkmanager nm-applet pulseaudio dhpcd'
+	chroot /mnt/gentoo /bin/bash -c 'systemctl enable --now NetworkManager'
 	echo "Creating hosts"
 	touch /mnt/gentoo/etc/hosts
 	chroot /mnt/gentoo /bin/bash -c 'emerge --oneshot sys-apps/pcmciautils'
 	chroot /mnt/gentoo /bin/bash -c 'passwd'
-	chroot /mnt/gentoo /bin/bash -c "useradd -m $username"
-	chroot /mnt/gentoo /bin/bash -c "passwd $username"
-	chroot /mnt/gentoo /bin/bash -c "usermod -aG wheel $username"
+	chroot /mnt/gentoo /bin/bash -c 'useradd -m ' $username
+	chroot /mnt/gentoo /bin/bash -c 'passwd ' $username
+	chroot /mnt/gentoo /bin/bash -c 'usermod -aG wheel ' $username
 	chroot /mnt/gentoo /bin/bash -c 'systemd-firstboot --prompt --setup-machine-id'
 	chroot /mnt/gentoo /bin/bash -c 'systemctl preset-all'
 	echo "Installing Wireless support"
