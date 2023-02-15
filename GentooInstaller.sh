@@ -50,7 +50,7 @@ if [[ $EUID = 0 ]]; then
 	mount $root_partition /mnt/gentoo
 	cd /mnt/gentoo
 	echo "Installing Gentoo with systemd"
-	wget http://gentoo.mirrors.ovh.net/gentoo-distfiles/releases/amd64/autobuilds/current-stage3-amd64-desktop-systemd/stage3-amd64-desktop-systemd-20230129T164658Z.tar.xz
+	wget http://ftp.rnl.tecnico.ulisboa.pt/pub/gentoo/gentoo-distfiles/releases/amd64/autobuilds/current-stage3-amd64-desktop-systemd/stage3-amd64-desktop-systemd-20230129T164658Z.tar.xz
 	echo "Extracting"
 	tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner
 	echo "Detecting CPU Cores for /mnt/gentoo/etc/portage/make.conf"
