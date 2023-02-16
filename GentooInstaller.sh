@@ -74,9 +74,9 @@ echo "Installing Gentoo with systemd"
 wget http://ftp.rnl.tecnico.ulisboa.pt/pub/gentoo/gentoo-distfiles/releases/amd64/autobuilds/current-stage3-amd64-desktop-systemd/stage3-amd64-desktop-systemd-20230129T164658Z.tar.xz
 echo "Extracting"
 tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner
-echo -e 'COMMON_CFLAGS="-march=native -O2 -pipe"\n''CXXFLAGS="${COMMON_FLAGS}"\n''FFLAGS="${COMMON_FLAGS}"\n''LC_MESSAGES=C\n''MAKEOPTS="-j2"\n' > /mnt/gentoo/etc/portage/make.conf
+echo -e 'COMMON_CFLAGS="-march=native -O2 -pipe"\n''CXXFLAGS="${COMMON_FLAGS}"\n''FFLAGS="${COMMON_FLAGS}"\n''LC_MESSAGES=C\n''MAKEOPTS="-j2 -l2"\n' > /mnt/gentoo/etc/portage/make.conf
 echo "Adding pre-build packages repository EXPERIMENTAL! "
-echo -e '[binhost]\n''priority = 9999\n''sync-uri = "https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/"' > /mnt/gentoo/etc/portage/binrepos.conf
+echo -e '[binhost]\n''priority = 9999\n''sync-uri = https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/' > /mnt/gentoo/etc/portage/binrepos.conf
 echo 'EMERGE_DEFAULT_OPTS="--binpkg-respect-use=y --getbinpkg=y"' << EOF
 /mnt/gentoo/etc/portage/make.conf
 EOF
