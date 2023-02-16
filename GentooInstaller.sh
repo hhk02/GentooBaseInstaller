@@ -105,7 +105,7 @@ read selection
 if [ -z $selection ]; then
 	echo "Selected one by default... Continue... "
 else
-	chroot "/mnt/gentoo" /usr/sbin/eselect profile set $selection
+	chroot "/mnt/gentoo" /usr/bin/eselect profile set $selection
 fi
 echo "Write the timezone: "
 read timezone
