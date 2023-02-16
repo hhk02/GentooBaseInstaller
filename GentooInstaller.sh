@@ -52,14 +52,15 @@ if [ -z $efi_partition ]; then
 else
 	echo "Root partiiton ex /dev/sda2:"
 	read root_partition
-	Install
-fi
-fi
 echo "Erasing and creating partition: EFI Partition"
 mkfs.vfat -F 32 $efi_partition
 echo "Erasing and creating partition: Root partition"
 mkfs.ext4 $root_partition
 clear
+Install
+fi
+fi
+
 }
 
 Install () {
@@ -73,16 +74,15 @@ echo "Installing Gentoo with systemd"
 wget http://ftp.rnl.tecnico.ulisboa.pt/pub/gentoo/gentoo-distfiles/releases/amd64/autobuilds/current-stage3-amd64-desktop-systemd/stage3-amd64-desktop-systemd-20230129T164658Z.tar.xz
 echo "Extracting"
 tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner
-echo "Detecting CPU Cores for /mnt/gentoo/etc/portage/make.conf"
-echo -e 'COMMON_CFLAGS="-march=native -O2 -pipe"\n''CXXFLAGS="${COMMON_FLAGS}"\n''FFLAGS="${COMMON_FLAGS}"\n''LC_MESSAGES=C\n''MAKEOPTS="-j$(nproc)"\n' > /mnt/gentoo/etc/portage/make.conf
+echo -e 'COMMON_CFLAGS="-march=native -O2 -pipe"\n''CXXFLAGS="${COMMON_FLAGS}"\n''FFLAGS="${COMMON_FLAGS}"\n''LC_MESSAGES=C\n''MAKEOPTS="-j2"\n' > /mnt/gentoo/etc/portage/make.conf
 echo "Adding pre-build packages repository EXPERIMENTAL! "
 echo -e '[binhost]\n''priority = 9999\n''sync-uri = "https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/"' > /mnt/gentoo/etc/portage/binrepos.conf
-echo 'EMERGE_DEFAULT_OPTS="--binpkg-respect-use=y --getbinpkg=y"' >> /mnt/gentoo/etc/portage/make.conf
+echo 'EMERGE_DEFAULT_OPTS="--binpkg-respect-use=y --getbinpkg=y"' << EOF
+/mnt/gentoo/etc/portage/make.conf
+EOF
 mkdir --parents /mnt/gentoo/etc/portage/repos.conf
 echo "Copying default repository configuration!"
 cp -v /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
-echo "Selecting a mirror"
-mirrorselect -i -o >> /mnt/gentoo/etc/portage/make.conf
 cp --dereference /etc/resolv.conf /mnt/gentoo/etc/
 echo "Changing into target.."
 mount --types proc /proc /mnt/gentoo/proc
@@ -120,7 +120,7 @@ else
 EOF
 fi
 echo "Generating LocalTime"
-chroot /mnt/gentoo /bin/bash -c << EOF
+chroot /mnt/gentoo /bin/bash -c <<< EOF
 ln -sf /usr/share/zoneinfo/$timezone /etc/localtime &&
 echo "Done!" &&
 nano -w /mnt/gentoo/etc/locale.gen &&
@@ -141,7 +141,6 @@ ls /mnt/gentoo/boot/vmlinu* /mnt/gentoo/boot/initramfs* &&
 echo "Cleaning..." &&
 emerge --depclean &&
 echo "Write hostname: " &&
-EOF
 read hostname 
 if [ -z $hostname ]; then
 	echo "Selected one by default... Continue... "
@@ -150,7 +149,6 @@ else
 fi
 
 echo $hostname > /mnt/gentoo/etc/hostname
-chroot /mnt/gentoo /bin/bash -c << EOF 
 emerge --oneshot networkmanager nm-applet pulseaudio dhpcd &&
 systemctl enable --now NetworkManager &&
 echo "Creating hosts" &&
@@ -161,11 +159,9 @@ passwd $username &&
 usermod -aG wheel $username &&
 systemd-firstboot --prompt --setup-machine-id &&
 systemctl preset-all &&
-EOF
 
 echo "Installing Wireless support"
-arch-chroot /mnt/gentoo /bin/bash -c << EOF
-emerge --oneshot net-wireless/iw net-wireless/wpa_supplicant' &&
+emerge --oneshot net-wireless/iw net-wireless/wpa_supplicant &&
 echo "Installing GRUB" &&
 echo 'GRUB_PLATFORMS="efi-64"' >> /mnt/gentoo/etc/portage/make.conf &&
 emerge --oneshot --verbose sys-boot/grub &&
