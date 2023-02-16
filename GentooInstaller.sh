@@ -139,9 +139,9 @@ chroot "/mnt/gentoo" /usr/bin/emerge --oneshot networkmanager nm-applet pulseaud
 chroot "/mnt/gentoo" /bin/systemctl enable --now NetworkManager
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot sys-apps/pcmciautils
 chroot "/mnt/gentoo" /bin/passwd
-chroot "/mnt/gentoo" /usr/sbin/useradd -m $username
-chroot "/mnt/gentoo" /bin/passwd $username
-chroot "/mnt/gentoo" /usr/sbin/usermod -aG wheel $username
+useradd -R /mnt/gentoo -m $username
+passwd -R /mnt/gentoo $username
+usermod -R /mnt/gentoo -aG wheel $username
 chroot "/mnt/gentoo" /bin/systemd-firstboot --prompt --setup-machine-id 
 chroot "/mnt/gentoo" /bin/systemctl preset-all
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot net-wireless/iw net-wireless/wpa_supplicant
