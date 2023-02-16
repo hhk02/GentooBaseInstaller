@@ -97,7 +97,6 @@ mount $efi_partition /mnt/gentoo/boot
 chroot "/mnt/gentoo" /usr/bin/emerge-webrsync
 chroot "/mnt/gentoo" /usr/bin/emerge --sync
 chroot "/mnt/gentoo" /usr/bin/emerge --sync --quiet
-chroot "/mnt/gentoo" /usr/bin/emerge --ask --verbose --update --deep --newuse @world
 echo "Showing profiles"
 chroot "/mnt/gentoo" /usr/bin/eselect profile list
 echo "Select a profile"
@@ -107,6 +106,8 @@ if [ -z $selection ]; then
 else
 	chroot "/mnt/gentoo" /usr/bin/eselect profile set $selection
 fi
+chroot "/mnt/gentoo" /usr/bin/emerge --ask --verbose --update --deep --newuse @world
+
 echo "Write the timezone: "
 read timezone
 if [ -z $timezone ]; then
