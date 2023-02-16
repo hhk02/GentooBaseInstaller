@@ -120,7 +120,7 @@ else
 EOF
 fi
 echo "Generating LocalTime"
-chroot /mnt/gentoo /bin/bash -c <<<< EOF
+chroot /mnt/gentoo /bin/bash -c < EOF
 ln -sf /usr/share/zoneinfo/$timezone /etc/localtime &&
 echo "Done!" &&
 nano -w /mnt/gentoo/etc/locale.gen &&
@@ -141,14 +141,14 @@ ls /mnt/gentoo/boot/vmlinu* /mnt/gentoo/boot/initramfs* &&
 echo "Cleaning..." &&
 emerge --depclean &&
 echo "Write hostname: " &&
-read hostname 
+read hostname
 if [ -z $hostname ]; then
 	echo "Selected one by default... Continue... "
 else
 	echo "Selected: $(hostname)"
 fi
 
-echo $hostname > /mnt/gentoo/etc/hostname
+echo $hostname > /mnt/gentoo/etc/hostname &&
 emerge --oneshot networkmanager nm-applet pulseaudio dhpcd &&
 systemctl enable --now NetworkManager &&
 echo "Creating hosts" &&
@@ -160,17 +160,17 @@ usermod -aG wheel $username &&
 systemd-firstboot --prompt --setup-machine-id &&
 systemctl preset-all &&
 
-echo "Installing Wireless support"
+echo "Installing Wireless support" &&
 emerge --oneshot net-wireless/iw net-wireless/wpa_supplicant &&
 echo "Installing GRUB" &&
 echo 'GRUB_PLATFORMS="efi-64"' >> /mnt/gentoo/etc/portage/make.conf &&
 emerge --oneshot --verbose sys-boot/grub &&
 emerge --update --newuse --verbose sys-boot/grub &&
-echo "Installing bootloader!"
+echo "Installing bootloader!" &&
 grub-install --target=x86_64-efi --efi-directory=/boot &&
 grub-mkconfig -o /boot/grub/grub.cfg &&
-echo "Installation complete!"	
-EOF
+echo "Installation complete!" &&
+EOF 
 }
 
 Welcome
