@@ -77,7 +77,6 @@ tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner
 nano -w /mnt/gentoo/etc/portage/make.conf
 mkdir /mnt/gentoo/etc/portage/repos.conf
 mirrorselect -i -o >> /mnt/gentoo/etc/portage/make.conf
-cp --dereference /etc/resolv.conf /mnt/gentoo/etc/
 echo "Changing into target.."
 mount --types proc /proc /mnt/gentoo/proc
 mount --rbind /sys /mnt/gentoo/sys
@@ -86,9 +85,7 @@ mount --rbind /dev /mnt/gentoo/dev
 mount --make-rslave /mnt/gentoo/dev
 mount --bind /run /mnt/gentoo/run
 mount --make-slave /mnt/gentoo/run
-	
 mount $efi_partition /mnt/gentoo/boot
-chroot "/mnt/gentoo" /usr/bin/emerge-webrsync
 chroot "/mnt/gentoo" /usr/bin/emerge --sync
 chroot "/mnt/gentoo" /usr/bin/emerge --sync --quiet
 echo "Showing profiles"
