@@ -75,9 +75,8 @@ wget http://ftp.rnl.tecnico.ulisboa.pt/pub/gentoo/gentoo-distfiles/releases/amd6
 echo "Extracting"
 tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner
 nano -w /mnt/gentoo/etc/portage/make.conf
-mkdir --parents /mnt/gentoo/etc/portage/repos.conf
-echo "Copying default repository configuration!"
-cp -v /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
+mkdir /mnt/gentoo/etc/portage/repos.conf
+mirrorselect -i -r -o >> /etc/portage/repos.conf/gentoo.conf
 cp --dereference /etc/resolv.conf /mnt/gentoo/etc/
 echo "Changing into target.."
 mount --types proc /proc /mnt/gentoo/proc
