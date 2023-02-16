@@ -125,8 +125,8 @@ chroot "/mnt/gentoo" /usr/bin/emerge --autounmask=y --autounmask-write sys-kerne
 chroot "/mnt/gentoo" /usr/sbin/dispatch-conf
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot sys-kernel/linux-firmware
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot genkernel
-genfstab -U / > /etc/fstab
-genkernel all
+chroot "/mnt/gentoo" /usr/bin/genfstab -U / > /etc/fstab
+chroot "/mnt/gentoo" /usr/bin/genkernel all
 chroot "/mnt/gentoo" /usr/bin/emerge --depclean
 
 echo "Write hostname: "
@@ -136,7 +136,7 @@ if [ -z $hostname ]; then
 else
 	echo "Selected: $(hostname)"
 echo $hostname > /mnt/gentoo/etc/hostname
-chroot "/mnt/gentoo" /usr/bin/emerge --oneshot networkmanager nm-applet pulseaudio dhpcd 
+chroot "/mnt/gentoo" /usr/bin/emerge --oneshot networkmanager nm-applet pulseaudio dhcpcd 
 chroot "/mnt/gentoo" /bin/systemctl enable --now NetworkManager
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot sys-apps/pcmciautils
 chroot "/mnt/gentoo" /bin/passwd
