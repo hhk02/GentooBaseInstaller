@@ -118,7 +118,7 @@ else
 	echo "Selected: $timezone"
 fi
 echo "Generating LocalTime"
-chroot /mnt/gentoo /bin/bash -c < EOF
+chroot /mnt/gentoo /bin/bash -c << EOF
 ln -sf /usr/share/zoneinfo/$timezone /etc/localtime &&
 nano -w /mnt/gentoo/etc/locale.gen &&
 locale-gen &&
@@ -142,7 +142,8 @@ else
 	echo "Selected: $(hostname)"
 fi
 
-echo $hostname > /mnt/gentoo/etc/hostname &&
+echo $hostname > /mnt/gentoo/etc/hostname
+chroot /mnt/gentoo /bin/bash -c << EOF
 emerge --oneshot networkmanager nm-applet pulseaudio dhpcd &&
 systemctl enable --now NetworkManager &&
 emerge --oneshot sys-apps/pcmciautils &&
