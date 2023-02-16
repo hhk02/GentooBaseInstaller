@@ -94,19 +94,22 @@ mount --bind /run /mnt/gentoo/run
 mount --make-slave /mnt/gentoo/run
 	
 mount $efi_partition /mnt/gentoo/boot
-chroot /mnt/gentoo /bin/bash -c 'emerge-webrsync'
-echo "Syncing repos!"
-chroot /mnt/gentoo /bin/bash -c 'emerge --sync'
-chroot /mnt/gentoo /bin/bash -c 'emerge --sync --quiet'
-chroot /mnt/gentoo /bin/bash -c 'emerge --ask --verbose --update --deep --newuse @world'
+chroot "/mnt/gentoo" /bin/bash -c << EOF
+emerge-webrsync &&
+emerge --sync &&
+emerge --sync --quiet &&
+emerge --ask --verbose --update --deep --newuse @world &&
+EOF
 echo "Showing profiles"
-chroot /mnt/gentoo /bin/bash -c 'eselect profile list'
-echo "Select a profile: "
+chroot "/mnt/gentoo" /bin/bash -c << EOF
+eselect profile list &&
+EOF
+echo "Select a profile"
 read selection
 if [ -z $selection ]; then
 	echo "Selected one by default... Continue... "
 else
-chroot /mnt/gentoo /bin/bash -c << EOF
+chroot "/mnt/gentoo" /bin/bash -c << EOF
 eselect profile set $selection &&
 EOF
 fi
@@ -118,7 +121,7 @@ else
 echo "Selected: $timezone"
 fi
 echo "Generating LocalTime"
-chroot /mnt/gentoo /bin/bash -c << EOF
+chroot "/mnt/gentoo" /bin/bash -c << EOF
 ln -sf /usr/share/zoneinfo/$timezone /etc/localtime &&
 nano -w /mnt/gentoo/etc/locale.gen &&
 locale-gen &&
@@ -140,10 +143,8 @@ if [ -z $hostname ]; then
 	echo "Selected one by default... Continue... "
 else
 	echo "Selected: $(hostname)"
-fi
-
 echo $hostname > /mnt/gentoo/etc/hostname
-chroot /mnt/gentoo /bin/bash -c << EOF
+chroot "/mnt/gentoo" /bin/bash -c << EOF
 emerge --oneshot networkmanager nm-applet pulseaudio dhpcd &&
 systemctl enable --now NetworkManager &&
 emerge --oneshot sys-apps/pcmciautils &&
@@ -160,6 +161,7 @@ emerge --update --newuse --verbose sys-boot/grub &&
 grub-install --target=x86_64-efi --efi-directory=/boot &&
 grub-mkconfig -o /boot/grub/grub.cfg &&
 EOF
+fi
 echo "Installation complete!"
 
 }
