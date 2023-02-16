@@ -107,7 +107,7 @@ if [ -z $selection ]; then
 	echo "Selected one by default... Continue... "
 else
 	chroot /mnt/gentoo /bin/bash -c < EOF
-	eselect profile set $selection
+	eselect profile set $selection &&
 	EOF
 fi
 echo "Write the timezone: "
@@ -115,16 +115,13 @@ read timezone
 if [ -z $timezone ]; then
 	echo "Selected one by default... Continue... "
 else
-	echo "Selected:"
-	$timezone
+	echo "Selected: $timezone"
 fi
 echo "Generating LocalTime"
 chroot /mnt/gentoo /bin/bash -c < EOF
 ln -sf /usr/share/zoneinfo/$timezone /etc/localtime &&
-echo "Done!" &&
 nano -w /mnt/gentoo/etc/locale.gen &&
 locale-gen &&
-echo "Installing kernel...." 
 emerge --oneshot sys-kernel/gentoo-kernel-bin &&
 emerge --oneshot sys-kernel/linux-headers &&
 emerge --oneshot sys-fs/genfstab &&
@@ -132,9 +129,7 @@ emerge --autounmask=y --autounmask-write sys-kernel/linux-firmware &&
 dispatch-conf &&
 emerge --oneshot sys-kernel/linux-firmware &&
 emerge --oneshot sys-kernel/genkernel &&
-echo "Generating fstab file!" 
 genfstab -U / > /etc/fstab &&
-echo "Generating kernel files..." 
 genkernel all &&
 emerge --depclean &&
 EOF
@@ -147,24 +142,25 @@ else
 	echo "Selected: $(hostname)"
 fi
 
-echo $hostname > /mnt/gentoo/etc/hostname &
-emerge --oneshot networkmanager nm-applet pulseaudio dhpcd &
-systemctl enable --now NetworkManager &
-emerge --oneshot sys-apps/pcmciautils &
-passwd &
-useradd -m $username &
-passwd $username &
-usermod -aG wheel $username &
-systemd-firstboot --prompt --setup-machine-id &
-systemctl preset-all &
+echo $hostname > /mnt/gentoo/etc/hostname &&
+emerge --oneshot networkmanager nm-applet pulseaudio dhpcd &&
+systemctl enable --now NetworkManager &&
+emerge --oneshot sys-apps/pcmciautils &&
+passwd &&
+useradd -m $username &&
+passwd $username &&
+usermod -aG wheel $username &&
+systemd-firstboot --prompt --setup-machine-id &&
+systemctl preset-all &&
 emerge --oneshot net-wireless/iw net-wireless/wpa_supplicant &&
 echo 'GRUB_PLATFORMS="efi-64"' >> /mnt/gentoo/etc/portage/make.conf &&
 emerge --oneshot --verbose sys-boot/grub &&
 emerge --update --newuse --verbose sys-boot/grub &&
 grub-install --target=x86_64-efi --efi-directory=/boot &&
 grub-mkconfig -o /boot/grub/grub.cfg &&
-echo "Installation complete!" &&
 EOF
+echo "Installation complete!"
+
 }
 
 Welcome
