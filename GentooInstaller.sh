@@ -115,9 +115,8 @@ read timezone
 if [ -z $timezone ]; then
 	echo "Selected one by default... Continue... "
 else
-	echo "Selected:" << EOF
+	echo "Selected:"
 	$timezone
-EOF
 fi
 echo "Generating LocalTime"
 chroot /mnt/gentoo /bin/bash -c < EOF
