@@ -76,7 +76,7 @@ echo "Extracting"
 tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner
 nano -w /mnt/gentoo/etc/portage/make.conf
 mkdir /mnt/gentoo/etc/portage/repos.conf
-mirrorselect -i -r -o >> /etc/portage/repos.conf/gentoo.conf
+mirrorselect -i -o >> /mnt/gentoo/etc/portage/make.conf
 cp --dereference /etc/resolv.conf /mnt/gentoo/etc/
 echo "Changing into target.."
 mount --types proc /proc /mnt/gentoo/proc
