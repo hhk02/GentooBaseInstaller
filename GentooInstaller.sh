@@ -149,8 +149,8 @@ chroot "/mnt/gentoo" /usr/bin/emerge --oneshot net-wireless/iw net-wireless/wpa_
 echo 'GRUB_PLATFORMS="efi-64"' >> /mnt/gentoo/etc/portage/make.conf
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot --verbose sys-boot/grub
 chroot "/mnt/gentoo" /usr/bin/emerge --update --newuse --verbose sys-boot/grub
-chroot "/mnt/gentoo" /usr/bin/grub-install --target=x86_64-efi --efi-directory=/boot 
-chroot "/mnt/gentoo" /usr/bin/grub-mkconfig -o /boot/grub/grub.cfg
+chroot "/mnt/gentoo" /usr/sbin/grub-install --target=x86_64-efi --efi-directory=/boot 
+chroot "/mnt/gentoo" /usr/sbin/grub-mkconfig -o /boot/grub/grub.cfg
 fi
 echo "Installation complete!"
 
