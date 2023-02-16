@@ -106,7 +106,7 @@ read selection
 if [ -z $selection ]; then
 	echo "Selected one by default... Continue... "
 else
-	chroot /mnt/gentoo /bin/bash -c <<<<<<<<< EOF
+	chroot /mnt/gentoo /bin/bash -c < EOF
 	eselect profile set $selection
 	EOF
 fi
@@ -124,7 +124,7 @@ ln -sf /usr/share/zoneinfo/$timezone /etc/localtime &&
 echo "Done!" &&
 nano -w /mnt/gentoo/etc/locale.gen &&
 locale-gen &&
-echo "Installing kernel...." &&
+echo "Installing kernel...." 
 emerge --oneshot sys-kernel/gentoo-kernel-bin &&
 emerge --oneshot sys-kernel/linux-headers &&
 emerge --oneshot sys-fs/genfstab &&
@@ -132,14 +132,14 @@ emerge --autounmask=y --autounmask-write sys-kernel/linux-firmware &&
 dispatch-conf &&
 emerge --oneshot sys-kernel/linux-firmware &&
 emerge --oneshot sys-kernel/genkernel &&
-echo "Generating fstab file!" &&
+echo "Generating fstab file!" 
 genfstab -U / > /etc/fstab &&
-echo "Generating kernel files..." &&
+echo "Generating kernel files..." 
 genkernel all &&
-ls /mnt/gentoo/boot/vmlinu* /mnt/gentoo/boot/initramfs* &&
-echo "Cleaning..." &&
 emerge --depclean &&
-echo "Write hostname: " &&
+EOF
+
+echo "Write hostname: "
 read hostname
 if [ -z $hostname ]; then
 	echo "Selected one by default... Continue... "
@@ -147,29 +147,24 @@ else
 	echo "Selected: $(hostname)"
 fi
 
-echo $hostname > /mnt/gentoo/etc/hostname &&
-emerge --oneshot networkmanager nm-applet pulseaudio dhpcd &&
-systemctl enable --now NetworkManager &&
-echo "Creating hosts" &&
-emerge --oneshot sys-apps/pcmciautils && 
-passwd &&
-useradd -m $username &&
-passwd $username &&
-usermod -aG wheel $username &&
-systemd-firstboot --prompt --setup-machine-id &&
-systemctl preset-all &&
-
-echo "Installing Wireless support" &&
+echo $hostname > /mnt/gentoo/etc/hostname &
+emerge --oneshot networkmanager nm-applet pulseaudio dhpcd &
+systemctl enable --now NetworkManager &
+emerge --oneshot sys-apps/pcmciautils &
+passwd &
+useradd -m $username &
+passwd $username &
+usermod -aG wheel $username &
+systemd-firstboot --prompt --setup-machine-id &
+systemctl preset-all &
 emerge --oneshot net-wireless/iw net-wireless/wpa_supplicant &&
-echo "Installing GRUB" &&
 echo 'GRUB_PLATFORMS="efi-64"' >> /mnt/gentoo/etc/portage/make.conf &&
 emerge --oneshot --verbose sys-boot/grub &&
 emerge --update --newuse --verbose sys-boot/grub &&
-echo "Installing bootloader!" &&
 grub-install --target=x86_64-efi --efi-directory=/boot &&
 grub-mkconfig -o /boot/grub/grub.cfg &&
 echo "Installation complete!" &&
-EOF 
+EOF
 }
 
 Welcome
