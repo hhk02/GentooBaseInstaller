@@ -94,48 +94,40 @@ mount --bind /run /mnt/gentoo/run
 mount --make-slave /mnt/gentoo/run
 	
 mount $efi_partition /mnt/gentoo/boot
-chroot "/mnt/gentoo" /bin/bash -c << EOF
-emerge-webrsync &&
-emerge --sync &&
-emerge --sync --quiet &&
-emerge --ask --verbose --update --deep --newuse @world &&
-EOF
+chroot "/mnt/gentoo" /usr/bin/emerge-webrsync
+chroot "/mnt/gentoo" /usr/bin/emerge --sync
+chroot "/mnt/gentoo" /usr/bin/emerge --sync --quiet
+chroot "/mnt/gentoo" /usr/bin/emerge --ask --verbose --update --deep --newuse @world
 echo "Showing profiles"
-chroot "/mnt/gentoo" /bin/bash -c << EOF
-eselect profile list &&
-EOF
+chroot "/mnt/gentoo" /usr/bin/eselect profile list
 echo "Select a profile"
 read selection
 if [ -z $selection ]; then
 	echo "Selected one by default... Continue... "
 else
-chroot "/mnt/gentoo" /bin/bash -c << EOF
-eselect profile set $selection &&
-EOF
+	chroot "/mnt/gentoo" /usr/sbin/eselect profile set $selection
 fi
 echo "Write the timezone: "
 read timezone
 if [ -z $timezone ]; then
 	echo "Selected one by default... Continue... "
 else
-echo "Selected: $timezone"
+	echo "Selected: $timezone"
 fi
 echo "Generating LocalTime"
-chroot "/mnt/gentoo" /bin/bash -c << EOF
-ln -sf /usr/share/zoneinfo/$timezone /etc/localtime &&
-nano -w /mnt/gentoo/etc/locale.gen &&
-locale-gen &&
-emerge --oneshot sys-kernel/gentoo-kernel-bin &&
-emerge --oneshot sys-kernel/linux-headers &&
-emerge --oneshot sys-fs/genfstab &&
-emerge --autounmask=y --autounmask-write sys-kernel/linux-firmware &&
-dispatch-conf &&
-emerge --oneshot sys-kernel/linux-firmware &&
-emerge --oneshot sys-kernel/genkernel &&
-genfstab -U / > /etc/fstab &&
-genkernel all &&
-emerge --depclean &&
-EOF
+chroot "/mnt/gentoo" /bin/ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
+nano -w /mnt/gentoo/etc/locale.gen
+chroot "/mnt/gentoo" /usr/sbin/locale-gen
+chroot "/mnt/gentoo" /usr/bin/emerge --oneshot sys-kernel/gentoo-kernel-bin
+chroot "/mnt/gentoo" /usr/bin/emerge --oneshot sys-kernel/linux-headers
+chroot "/mnt/gentoo" /usr/bin/emerge --oneshot sys-fs/genfstab
+chroot "/mnt/gentoo" /usr/bin/emerge --autounmask=y --autounmask-write sys-kernel/linux-firmware
+chroot "/mnt/gentoo" /usr/sbin/dispatch-conf
+chroot "/mnt/gentoo" /usr/bin/emerge --oneshot sys-kernel/linux-firmware
+chroot "/mnt/gentoo" /usr/bin/emerge --oneshot genkernel
+genfstab -U / > /etc/fstab
+genkernel all
+chroot "/mnt/gentoo" /usr/bin/emerge --depclean
 
 echo "Write hostname: "
 read hostname
@@ -144,23 +136,21 @@ if [ -z $hostname ]; then
 else
 	echo "Selected: $(hostname)"
 echo $hostname > /mnt/gentoo/etc/hostname
-chroot "/mnt/gentoo" /bin/bash -c << EOF
-emerge --oneshot networkmanager nm-applet pulseaudio dhpcd &&
-systemctl enable --now NetworkManager &&
-emerge --oneshot sys-apps/pcmciautils &&
-passwd &&
-useradd -m $username &&
-passwd $username &&
-usermod -aG wheel $username &&
-systemd-firstboot --prompt --setup-machine-id &&
-systemctl preset-all &&
-emerge --oneshot net-wireless/iw net-wireless/wpa_supplicant &&
-echo 'GRUB_PLATFORMS="efi-64"' >> /mnt/gentoo/etc/portage/make.conf &&
-emerge --oneshot --verbose sys-boot/grub &&
-emerge --update --newuse --verbose sys-boot/grub &&
-grub-install --target=x86_64-efi --efi-directory=/boot &&
-grub-mkconfig -o /boot/grub/grub.cfg &&
-EOF
+chroot "/mnt/gentoo" /usr/bin/emerge --oneshot networkmanager nm-applet pulseaudio dhpcd 
+chroot "/mnt/gentoo" /bin/systemctl enable --now NetworkManager
+chroot "/mnt/gentoo" /usr/bin/emerge --oneshot sys-apps/pcmciautils
+chroot "/mnt/gentoo" /bin/passwd
+chroot "/mnt/gentoo" /usr/sbin/useradd -m $username
+chroot "/mnt/gentoo" /bin/passwd $username
+chroot "/mnt/gentoo" /usr/sbin/usermod -aG wheel $username
+chroot "/mnt/gentoo" /bin/systemd-firstboot --prompt --setup-machine-id 
+chroot "/mnt/gentoo" /bin/systemctl preset-all
+chroot "/mnt/gentoo" /usr/bin/emerge --oneshot net-wireless/iw net-wireless/wpa_supplicant
+echo 'GRUB_PLATFORMS="efi-64"' >> /mnt/gentoo/etc/portage/make.conf
+chroot "/mnt/gentoo" /usr/bin/emerge --oneshot --verbose sys-boot/grub
+chroot "/mnt/gentoo" /usr/bin/emerge --update --newuse --verbose sys-boot/grub
+chroot "/mnt/gentoo" /usr/bin/grub-install --target=x86_64-efi --efi-directory=/boot 
+chroot "/mnt/gentoo" /usr/bin/grub-mkconfig -o /boot/grub/grub.cfg
 fi
 echo "Installation complete!"
 
