@@ -106,16 +106,16 @@ read selection
 if [ -z $selection ]; then
 	echo "Selected one by default... Continue... "
 else
-	chroot /mnt/gentoo /bin/bash -c << EOF
-	eselect profile set $selection &&
-	EOF
+chroot /mnt/gentoo /bin/bash -c << EOF
+eselect profile set $selection &&
+EOF
 fi
 echo "Write the timezone: "
 read timezone
 if [ -z $timezone ]; then
 	echo "Selected one by default... Continue... "
 else
-	echo "Selected: $timezone"
+echo "Selected: $timezone"
 fi
 echo "Generating LocalTime"
 chroot /mnt/gentoo /bin/bash -c << EOF
