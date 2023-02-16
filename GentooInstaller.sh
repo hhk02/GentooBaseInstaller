@@ -106,7 +106,7 @@ read selection
 if [ -z $selection ]; then
 	echo "Selected one by default... Continue... "
 else
-	chroot /mnt/gentoo /bin/bash -c < EOF
+	chroot /mnt/gentoo /bin/bash -c <<<<<<<<< EOF
 	eselect profile set $selection
 	EOF
 fi
