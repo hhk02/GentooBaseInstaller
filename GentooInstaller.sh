@@ -102,7 +102,7 @@ read selection
 if [ -z $selection ]; then
 	echo "Selected one by default... Continue... "
 else
-	chroot "/mnt/gentoo" /usr/bin/eselect profile set $selection --force
+	chroot "/mnt/gentoo" /usr/bin/eselect profile set $selection
 fi
 chroot "/mnt/gentoo" /usr/bin/emerge --ask --verbose --update --deep --newuse @world
 
