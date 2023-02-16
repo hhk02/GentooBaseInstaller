@@ -75,8 +75,6 @@ wget http://ftp.rnl.tecnico.ulisboa.pt/pub/gentoo/gentoo-distfiles/releases/amd6
 echo "Extracting"
 tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner
 nano -w /mnt/gentoo/etc/portage/make.conf
-echo "Adding pre-build packages repository EXPERIMENTAL! "
-echo -e '[binhost]\n''priority = 9999\n''sync-uri = https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/' > /mnt/gentoo/etc/portage/binrepos.conf
 mkdir --parents /mnt/gentoo/etc/portage/repos.conf
 echo "Copying default repository configuration!"
 cp -v /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
