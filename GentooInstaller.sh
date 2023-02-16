@@ -120,7 +120,7 @@ else
 EOF
 fi
 echo "Generating LocalTime"
-chroot /mnt/gentoo /bin/bash -c <<< EOF
+chroot /mnt/gentoo /bin/bash -c <<<< EOF
 ln -sf /usr/share/zoneinfo/$timezone /etc/localtime &&
 echo "Done!" &&
 nano -w /mnt/gentoo/etc/locale.gen &&
