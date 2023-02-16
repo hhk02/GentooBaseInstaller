@@ -80,6 +80,7 @@ mirrorselect -i -o >> /mnt/gentoo/etc/portage/make.conf
 mkdir --parents /mnt/gentoo/etc/portage/repos.conf
 cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
 cp --dereference /etc/resolv.conf /mnt/gentoo/etc/
+
 echo "Changing into target.."
 mount --types proc /proc /mnt/gentoo/proc
 mount --rbind /sys /mnt/gentoo/sys
@@ -88,9 +89,10 @@ mount --rbind /dev /mnt/gentoo/dev
 mount --make-rslave /mnt/gentoo/dev
 mount --bind /run /mnt/gentoo/run
 mount --make-slave /mnt/gentoo/run
-mount $efi_partition /mnt/gentoo/boot
+chroot "/mnt/gentoo" /bin/mount $efi_partition /boot
 chroot "/mnt/gentoo" /bin/bash -c 'source /etc/profile'
 chroot "/mnt/gentoo" /bin/bash -c 'export PS1="(chroot) ${PS1}"'
+chroot "/mnt/gentoo" /usr/bin/emerge-webrsync
 chroot "/mnt/gentoo" /usr/bin/emerge --sync
 chroot "/mnt/gentoo" /usr/bin/emerge --sync --quiet
 echo "Showing profiles"
