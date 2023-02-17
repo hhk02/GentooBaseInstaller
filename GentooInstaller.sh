@@ -80,7 +80,7 @@ mirrorselect -i -o >> /mnt/gentoo/etc/portage/make.conf
 mkdir --parents /mnt/gentoo/etc/portage/repos.conf
 cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
 cp --dereference /etc/resolv.conf /mnt/gentoo/etc/
-
+echo -e "[binhost]\npriority = 9999\nsync-uri = https://gentoo.osuosl.org/experimental/amd64/binpkg/default/linux/17.1/x86-64/" >> /etc/portage/binrepos.conf
 echo "Changing into target.."
 mount --types proc /proc /mnt/gentoo/proc
 mount --rbind /sys /mnt/gentoo/sys
