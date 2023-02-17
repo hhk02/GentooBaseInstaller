@@ -70,7 +70,7 @@ mkdir --parents /mnt/gentoo
 echo "Mounting root partition!"
 mount $root_partition /mnt/gentoo
 cd /mnt/gentoo
-echo "Installing Gentoo with systemd"
+echo "Installing Gentoo with systemd PD: He ahi la importancia de systemd :v"
 wget https://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/20230129T164658Z/stage3-amd64-desktop-systemd-20230129T164658Z.tar.xz
 echo "Extracting"
 tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner
@@ -126,7 +126,6 @@ chroot "/mnt/gentoo" /usr/bin/emerge --oneshot sys-kernel/linux-firmware
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot genkernel
 chroot "/mnt/gentoo" /usr/bin/genfstab -U / > /etc/fstab
 chroot "/mnt/gentoo" /usr/bin/genkernel all
-chroot "/mnt/gentoo" /usr/bin/emerge --depclean
 
 echo "Write hostname: "
 read hostname
@@ -135,9 +134,8 @@ if [ -z $hostname ]; then
 else
 	echo "Selected: $(hostname)"
 echo $hostname > /mnt/gentoo/etc/hostname
-chroot "/mnt/gentoo" /usr/bin/emerge --oneshot networkmanager nm-applet pulseaudio dhcpcd 
-chroot "/mnt/gentoo" /bin/systemctl enable --now NetworkManager
-chroot "/mnt/gentoo" /usr/bin/emerge --oneshot sys-apps/pcmciautils
+chroot "/mnt/gentoo" /usr/bin/emerge --oneshot dhcpcd 
+chroot "/mnt/gentoo" /bin/systemctl enable --now dhcpcd
 chroot "/mnt/gentoo" /bin/passwd
 useradd -R /mnt/gentoo -m $username
 passwd -R /mnt/gentoo $username
