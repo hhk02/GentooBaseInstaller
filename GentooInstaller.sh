@@ -6,7 +6,7 @@ network_device=""
 disk=""
 efi_partition=""
 root_partition=""
-selection="12"
+selection="KDE"
 hostname="Gentoo"
 timezone="Europe/Madrid"
 username=""
@@ -96,16 +96,27 @@ chroot "/mnt/gentoo" /bin/bash -c 'export PS1="(chroot) ${PS1}"'
 chroot "/mnt/gentoo" /usr/bin/emerge-webrsync
 chroot "/mnt/gentoo" /usr/bin/emerge --sync
 chroot "/mnt/gentoo" /usr/bin/emerge --sync --quiet
-echo "Showing profiles"
-chroot "/mnt/gentoo" /usr/bin/eselect profile list
-echo "Select a profile"
+echo "Select a desktop:"
+echo "KDE"
+echo "GNOME"
 read selection
+if [ $selection -eq "KDE" ]; then
+	echo 'USE="plymouth pulseaudio sddm sdk smart systemd thunderbolt wallpapers accessibility browser-integration  bluetooth  colord crash-handler crypt desktop-portal  discover display-manager firewall grub gtk handbook networkmanager"' >> /mnt/gentoo/etc/portage/make.conf
+	echo "Installing KDE PLASMA"
+	chroot /mnt/gentoo /usr/bin/emerge -v kde-plasma/plasma-meta sddm
+	echo "Done!"
+else
+	echo '"USE="-qt5 -kde X gtk gnome systemd"' >> /mnt/gentoo/etc/portage/make.conf
+	chroot /mnt/gentoo /usr/bin/emerge -v gnome-base/gnome-light gdm
+	echo "Done!"
+fi
 if [ -z $selection ]; then
 	echo "Selected one by default... Continue... "
+	echo $selection
 else
-	chroot "/mnt/gentoo" /usr/bin/eselect profile set $selection
+	echo "Selected: " $selection
 fi
-chroot "/mnt/gentoo" /usr/bin/emerge --ask --verbose --update --deep --newuse @world
+chroot "/mnt/gentoo" /usr/bin/emerge --verbose --update --deep --newuse @world
 
 echo "Write the timezone: "
 read timezone
@@ -136,7 +147,7 @@ else
 	echo "Selected: $(hostname)"
 echo $hostname > /mnt/gentoo/etc/hostname
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot dhcpcd 
-chroot "/mnt/gentoo" /bin/systemctl enable --now dhcpcd
+chroot "/mnt/gentoo" /bin/systemctl enable --now NetworkManager
 chroot "/mnt/gentoo" /bin/passwd
 useradd -R /mnt/gentoo -m $username
 passwd -R /mnt/gentoo $username
