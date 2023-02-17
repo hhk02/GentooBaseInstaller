@@ -97,25 +97,26 @@ chroot "/mnt/gentoo" /usr/bin/emerge-webrsync
 chroot "/mnt/gentoo" /usr/bin/emerge --sync
 chroot "/mnt/gentoo" /usr/bin/emerge --sync --quiet
 echo "Select a desktop:"
-echo "KDE"
-echo "GNOME"
+echo "kde"
+echo "gnome"
 read selection
-if [ $selection -eq "KDE" ]; then
-	echo 'USE="plymouth pulseaudio sddm sdk smart systemd thunderbolt wallpapers accessibility browser-integration  bluetooth  colord crash-handler crypt desktop-portal  discover display-manager firewall grub gtk handbook networkmanager"' >> /mnt/gentoo/etc/portage/make.conf
-	echo "Installing KDE PLASMA"
-	chroot /mnt/gentoo /usr/bin/emerge -v kde-plasma/plasma-meta sddm
-	echo "Done!"
-else
-	echo 'USE="-qt5 -kde X gtk gnome systemd"' >> /mnt/gentoo/etc/portage/make.conf
-	chroot /mnt/gentoo /usr/bin/emerge -v gnome-base/gnome-light gdm
-	echo "Done!"
-fi
 if [ -z $selection ]; then
 	echo "Selected one by default... Continue... "
 	echo $selection
 else
 	echo "Selected: " $selection
 fi
+if [ $selection -eq "kde" ]; then
+	echo 'USE="plymouth pulseaudio sddm sdk smart systemd thunderbolt wallpapers accessibility browser-integration  bluetooth  colord crash-handler crypt desktop-portal  discover display-manager firewall grub gtk handbook networkmanager"' >> /mnt/gentoo/etc/portage/make.conf
+	echo "Installing KDE PLASMA"
+	chroot /mnt/gentoo /usr/bin/emerge -v kde-plasma/plasma-meta sddm networkmanager nm-applet
+	echo "Done!"
+else
+	echo 'USE="-qt5 -kde X gtk gnome networkmanager systemd pulseaudio"' >> /mnt/gentoo/etc/portage/make.conf
+	chroot /mnt/gentoo /usr/bin/emerge -v gnome-base/gnome-light gdm networkmanager nm-applet pulseaudio
+	echo "Done!"
+fi
+
 chroot "/mnt/gentoo" /usr/bin/emerge --verbose --update --deep --newuse @world
 
 echo "Write the timezone: "
