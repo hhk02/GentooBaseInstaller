@@ -106,7 +106,7 @@ if [ $selection -eq "KDE" ]; then
 	chroot /mnt/gentoo /usr/bin/emerge -v kde-plasma/plasma-meta sddm
 	echo "Done!"
 else
-	echo '"USE="-qt5 -kde X gtk gnome systemd"' >> /mnt/gentoo/etc/portage/make.conf
+	echo 'USE="-qt5 -kde X gtk gnome systemd"' >> /mnt/gentoo/etc/portage/make.conf
 	chroot /mnt/gentoo /usr/bin/emerge -v gnome-base/gnome-light gdm
 	echo "Done!"
 fi
