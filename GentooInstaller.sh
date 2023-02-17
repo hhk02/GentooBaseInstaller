@@ -146,7 +146,7 @@ if [ -z $hostname ]; then
 else
 	echo "Selected: $(hostname)"
 echo $hostname > /mnt/gentoo/etc/hostname
-chroot "/mnt/gentoo" /usr/bin/emerge --oneshot dhcpcd 
+##chroot "/mnt/gentoo" /usr/bin/emerge --oneshot dhcpcd 
 chroot "/mnt/gentoo" /bin/systemctl enable --now NetworkManager
 chroot "/mnt/gentoo" /bin/passwd
 useradd -R /mnt/gentoo -m $username
@@ -156,6 +156,15 @@ chroot "/mnt/gentoo" /bin/systemd-firstboot --prompt --setup-machine-id
 chroot "/mnt/gentoo" /bin/systemctl preset-all
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot net-wireless/iw net-wireless/iwd net-wireless/wpa_supplicant
 chroot "/mnt/gentoo" /bin/systemctl enable --now iwd
+if [ $selection -eq "KDE" ]; then
+	chroot /mnt/gentoo /bin/systemctl enable sddm
+	chroot /mnt/gentoo /bin/systemctl enable NetworkManager
+	echo "Done!"
+else
+	chroot /mnt/gentoo /bin/systemctl enable gdm
+	chroot /mnt/gentoo /bin/systemctl enable NetworkManager
+	echo "Done!"
+fi
 echo 'GRUB_PLATFORMS="efi-64"' >> /mnt/gentoo/etc/portage/make.conf
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot --verbose sys-boot/grub
 chroot "/mnt/gentoo" /usr/bin/emerge --update --newuse --verbose sys-boot/grub
