@@ -109,6 +109,8 @@ fi
 if [[ $selection == "kde" ]]; then
 	echo 'USE="plymouth pulseaudio sddm sdk smart systemd thunderbolt wallpapers accessibility browser-integration  bluetooth  colord crash-handler crypt desktop-portal  discover display-manager firewall grub gtk handbook networkmanager"' >> /mnt/gentoo/etc/portage/make.conf
 	echo "Installing KDE PLASMA"
+	chroot /mnt/gentoo /usr/bin/emerge --autounmask=y --autounmask-write kconfig
+	chroot /mnt/gentoo /usr/sbin/dispatch-conf
 	chroot /mnt/gentoo /usr/bin/emerge -v kde-plasma/plasma-meta sddm networkmanager nm-applet
 	echo "Done!"
 else
