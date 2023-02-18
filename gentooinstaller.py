@@ -85,7 +85,7 @@ def SelectDesktop():
 
 
 def Install(mountpoint):
-    os.system("mount " + root_partition + "" + mountpoint)
+    os.system("mount " + root_partition + " /mnt/gentoo")
     os.chdir(mountpoint)
     os.system("wget http://gentoo.mirrors.ovh.net/gentoo-distfiles/releases/amd64/autobuilds/current-stage3-amd64-desktop-systemd/stage3-amd64-desktop-systemd-20230129T164658Z.tar.xz")
     os.system("tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner")
@@ -133,3 +133,4 @@ def Menu():
         Menu()
    else:
         FormatDisk(disk=disk)
+Menu()
