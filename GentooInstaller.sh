@@ -107,14 +107,14 @@ else
 	echo "Selected: " $selection
 fi
 if [[ $selection == "kde" ]]; then
-	echo 'USE="plymouth pulseaudio sddm sdk smart systemd thunderbolt wallpapers accessibility browser-integration  bluetooth  colord crash-handler crypt desktop-portal  discover display-manager firewall grub gtk handbook networkmanager"' >> /mnt/gentoo/etc/portage/make.conf
+	echo 'USE="plymouth minimal pulseaudio sddm sdk smart systemd thunderbolt wallpapers accessibility browser-integration  bluetooth  colord crash-handler crypt desktop-portal  discover display-manager firewall grub gtk handbook networkmanager"' >> /mnt/gentoo/etc/portage/make.conf
 	echo "Installing KDE PLASMA"
 	chroot /mnt/gentoo /usr/bin/emerge --autounmask=y --autounmask-write plasma-meta
 	chroot /mnt/gentoo /usr/sbin/dispatch-conf
 	chroot /mnt/gentoo /usr/bin/emerge -v kde-plasma/plasma-meta sddm networkmanager nm-applet
 	echo "Done!"
 else
-	echo 'USE="-qt5 -kde X gtk gnome networkmanager systemd pulseaudio"' >> /mnt/gentoo/etc/portage/make.conf
+	echo 'USE="-qt5 -kde X gtk minimal gnome networkmanager systemd pulseaudio"' >> /mnt/gentoo/etc/portage/make.conf
 	chroot /mnt/gentoo /usr/bin/emerge -v gnome-base/gnome-light gdm networkmanager nm-applet pulseaudio
 	echo "Done!"
 fi
