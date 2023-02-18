@@ -8,6 +8,8 @@ mntdir = "/mnt/gentoo"
 hostname="Gentoo"
 desktop=""
 
+from sh import mount
+
 def SetupSystemD():
         os.system("/bin/systemd-firstboot --prompt --setup-machine-id")
         os.system("/bin/systemctl preset-all")
@@ -85,7 +87,7 @@ def SelectDesktop():
 
 
 def Install(mountpoint):
-    os.system("mount " + root_partition + " /mnt/gentoo")
+    mount(root_partition,mntdir,"-t ext4")
     os.chdir(mountpoint)
     os.system("wget http://gentoo.mirrors.ovh.net/gentoo-distfiles/releases/amd64/autobuilds/current-stage3-amd64-desktop-systemd/stage3-amd64-desktop-systemd-20230129T164658Z.tar.xz")
     os.system("tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner")
@@ -101,7 +103,7 @@ def Install(mountpoint):
     os.system("mount --bind /run /mnt/gentoo/run")
     os.system("mount --make-slave /mnt/gentoo/run")
     os.chroot(mountpoint)
-    os.system("mount " + efi_partition + "" + "/boot")
+    mount(efi_partition,"/boot","-t vfat")
     os.system("source /etc/profile")
     os.system("export PS1=(chroot) ${PS1}")
     os.system("/usr/bin/emerge-websync")
