@@ -6,7 +6,7 @@ network_device=""
 disk=""
 efi_partition=""
 root_partition=""
-selection="KDE"
+selection="kde"
 hostname="Gentoo"
 timezone="Europe/Madrid"
 username=""
@@ -70,7 +70,7 @@ mkdir --parents /mnt/gentoo
 echo "Mounting root partition!"
 mount $root_partition /mnt/gentoo
 cd /mnt/gentoo
-echo "Installing Gentoo with systemd PD: He ahi la importancia de systemd :v"
+echo "Installing Gentoo with systemd"
 wget https://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/20230129T164658Z/stage3-amd64-desktop-systemd-20230129T164658Z.tar.xz
 echo "Extracting"
 tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner
@@ -106,7 +106,7 @@ if [ -z $selection ]; then
 else
 	echo "Selected: " $selection
 fi
-if [ $selection -eq "kde" ]; then
+if [[ $selection == "kde" ]]; then
 	echo 'USE="plymouth pulseaudio sddm sdk smart systemd thunderbolt wallpapers accessibility browser-integration  bluetooth  colord crash-handler crypt desktop-portal  discover display-manager firewall grub gtk handbook networkmanager"' >> /mnt/gentoo/etc/portage/make.conf
 	echo "Installing KDE PLASMA"
 	chroot /mnt/gentoo /usr/bin/emerge -v kde-plasma/plasma-meta sddm networkmanager nm-applet
@@ -157,7 +157,7 @@ chroot "/mnt/gentoo" /bin/systemd-firstboot --prompt --setup-machine-id
 chroot "/mnt/gentoo" /bin/systemctl preset-all
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot net-wireless/iw net-wireless/iwd net-wireless/wpa_supplicant
 chroot "/mnt/gentoo" /bin/systemctl enable --now iwd
-if [ $selection -eq "KDE" ]; then
+if [[ $selection == "kde" ]]; then
 	chroot /mnt/gentoo /bin/systemctl enable sddm
 	chroot /mnt/gentoo /bin/systemctl enable NetworkManager
 	echo "Done!"
