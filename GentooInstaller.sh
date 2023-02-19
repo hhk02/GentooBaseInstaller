@@ -6,7 +6,6 @@ network_device=""
 disk=""
 efi_partition=""
 root_partition=""
-selection="kde"
 hostname="Gentoo"
 timezone="Europe/Madrid"
 username=""
@@ -96,28 +95,6 @@ chroot "/mnt/gentoo" /bin/bash -c 'export PS1="(chroot) ${PS1}"'
 chroot "/mnt/gentoo" /usr/bin/emerge-webrsync
 chroot "/mnt/gentoo" /usr/bin/emerge --sync
 chroot "/mnt/gentoo" /usr/bin/emerge --sync --quiet
-echo "Select a desktop:"
-echo "kde"
-echo "gnome"
-read selection
-if [ -z $selection ]; then
-	echo "Selected one by default... Continue... "
-	echo $selection
-else
-	echo "Selected: " $selection
-fi
-if [[ $selection == "kde" ]]; then
-	echo 'USE="plymouth minimal pulseaudio sddm sdk smart systemd thunderbolt wallpapers accessibility browser-integration  bluetooth  colord crash-handler crypt desktop-portal  discover display-manager firewall grub gtk handbook networkmanager"' >> /mnt/gentoo/etc/portage/make.conf
-	echo "Installing KDE PLASMA"
-	chroot /mnt/gentoo /usr/bin/emerge --autounmask=y --autounmask-write plasma-meta
-	chroot /mnt/gentoo /usr/sbin/dispatch-conf
-	chroot /mnt/gentoo /usr/bin/emerge -v kde-plasma/plasma-meta sddm networkmanager nm-applet
-	echo "Done!"
-else
-	echo 'USE="-qt5 -kde X gtk minimal gnome networkmanager systemd pulseaudio"' >> /mnt/gentoo/etc/portage/make.conf
-	chroot /mnt/gentoo /usr/bin/emerge -v gnome-base/gnome-light gdm networkmanager nm-applet pulseaudio
-	echo "Done!"
-fi
 
 chroot "/mnt/gentoo" /usr/bin/emerge --verbose --update --deep --newuse @world
 
@@ -159,15 +136,6 @@ chroot "/mnt/gentoo" /bin/systemd-firstboot --prompt --setup-machine-id
 chroot "/mnt/gentoo" /bin/systemctl preset-all
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot net-wireless/iw net-wireless/iwd net-wireless/wpa_supplicant
 chroot "/mnt/gentoo" /bin/systemctl enable --now iwd
-if [[ $selection == "kde" ]]; then
-	chroot /mnt/gentoo /bin/systemctl enable sddm
-	chroot /mnt/gentoo /bin/systemctl enable NetworkManager
-	echo "Done!"
-else
-	chroot /mnt/gentoo /bin/systemctl enable gdm
-	chroot /mnt/gentoo /bin/systemctl enable NetworkManager
-	echo "Done!"
-fi
 echo 'GRUB_PLATFORMS="efi-64"' >> /mnt/gentoo/etc/portage/make.conf
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot --verbose sys-boot/grub
 chroot "/mnt/gentoo" /usr/bin/emerge --update --newuse --verbose sys-boot/grub
