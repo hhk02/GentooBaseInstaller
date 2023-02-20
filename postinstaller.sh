@@ -60,7 +60,7 @@ Main() {
 }
 
 if [ $EUID -eq 0 ]; then
-    Menu
+    Main
 else
     echo "Make sure you root for run this!"
 fi
