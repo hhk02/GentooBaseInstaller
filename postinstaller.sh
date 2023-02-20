@@ -12,7 +12,7 @@ Main() {
         echo "Please write a username!"
         read USERNAME
     else
-        echo "Creating: " && $USERNAME
+        echo "Creating: "$USERNAME
         useradd -m $USERNAME
         echo "Please write a password: "
         passwd $USERNAME
@@ -32,7 +32,7 @@ Main() {
         echo "Please specify a desktop!"
         read DESKTOP
     else
-        echo "Selected :" && $DESKTOP
+        echo "Selected :" $DESKTOP
 
         if [ $DESKTOP == "KDE" ]; then
             emerge --autounmask=y --autounmask-write plasma-meta
