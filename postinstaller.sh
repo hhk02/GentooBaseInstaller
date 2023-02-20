@@ -10,7 +10,7 @@ Main() {
 
     if [ -z $USERNAME ]; then
         echo "Please write a username!"
-        read -p "USERNAME: "
+        read -p "USERNAME: " USERNAME
     else
         echo "Creating: " && $USERNAME
         useradd -m $USERNAME
