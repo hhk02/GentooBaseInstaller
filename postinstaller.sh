@@ -26,11 +26,11 @@ Main() {
     echo "GNOME"
     echo "MATE"
 
-    read -p DESKTOP
+    read DESKTOP
 
     if [ -z $DESKTOP ]; then
         echo "Please specify a desktop!"
-        read -p DESKTOP
+        read DESKTOP
     else
         echo "Selected :" && $DESKTOP
 
