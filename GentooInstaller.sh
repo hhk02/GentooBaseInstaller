@@ -136,8 +136,12 @@ chroot "/mnt/gentoo" /usr/bin/emerge --oneshot --verbose sys-boot/grub
 chroot "/mnt/gentoo" /usr/bin/emerge --update --newuse --verbose sys-boot/grub
 chroot "/mnt/gentoo" /usr/sbin/grub-install --target=x86_64-efi --efi-directory=/boot 
 chroot "/mnt/gentoo" /usr/sbin/grub-mkconfig -o /boot/grub/grub.cfg
+wget https://raw.githubusercontent.com/hhk02/GentooBaseInstaller/main/postinstaller.sh
+chmod 777 postinstaller.sh
+cp postinsaller.sh /bin/
 fi
 echo "Installation complete!"
+echo "Please reboot the installer and write in the terminal postinstaller.sh as root for run post installation!"
 
 }
 
