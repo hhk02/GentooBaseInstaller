@@ -43,19 +43,19 @@ Main() {
             emerge -v plasma-meta sddm networkmanager nm-applet pulseaudio
             systemctl enable sddm
             systemctl enable NetworkManager
-            systemctl --user enable pulseaudio
+            systemctl --global enable pulseaudio.service pulseaudio.socket
             echo "Done!"
         elif [ $DESKTOP == "GNOME" ]; then
             emerge -v gnome-light gdm networkmanager nm-applet pulseaudio
             systemctl enable gdm
             systemctl enable NetworkManager
-            systemctl --user enable pulseaudio
+            systemctl --global enable pulseaudio.service pulseaudio.socket
             echo "Done!"
         else
             emerge -v mate lightdm networkmanager nm-applet pulseaudio
             systemctl enable lightdm
             systemctl enable NetworkManager
-            systemctl --user enable pulseaudio
+            systemctl --global enable pulseaudio.service pulseaudio.socket
             echo "Done!"
         fi
     fi
