@@ -16,6 +16,7 @@ Main() {
         useradd -m $USERNAME
         echo "Please write a password: "
         passwd $USERNAME
+        usermod -aG wheel $USERNAME
     fi
 
     emerge --sync
