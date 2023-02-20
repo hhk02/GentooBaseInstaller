@@ -36,6 +36,7 @@ Main() {
         echo "Selected :" $DESKTOP
 
         if [ $DESKTOP == "KDE" ]; then
+            echo 'USE="+qml"' >> /etc/portage/make.conf
             emerge --autounmask=y --autounmask-write plasma-meta
             echo "Please press 'u' in the keyboard for unmask some KDE dependencies!"
             dispatch-conf
