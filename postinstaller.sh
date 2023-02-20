@@ -5,12 +5,12 @@ USERNAME=''
 
 Main() {
     echo "WELCOME TO THE POST-INSTALLATION FOR GENTOO LINUX BY HHK02 FIRST LET'S CREATE A USER !\n"
-
-    read -p "USERNAME: "
+    echo "Write a username:"
+    read USERNAME
 
     if [ -z $USERNAME ]; then
         echo "Please write a username!"
-        read -p "USERNAME: " USERNAME
+        read USERNAME
     else
         echo "Creating: " && $USERNAME
         useradd -m $USERNAME
