@@ -8,8 +8,6 @@ efi_partition=""
 root_partition=""
 hostname="Gentoo"
 timezone="Europe/Madrid"
-username=""
-password=""
 
 Welcome () {
 if [[ $EUID = 0 ]]; then
@@ -126,16 +124,13 @@ if [ -z $hostname ]; then
 else
 	echo "Selected: $(hostname)"
 echo $hostname > /mnt/gentoo/etc/hostname
-##chroot "/mnt/gentoo" /usr/bin/emerge --oneshot dhcpcd 
-chroot "/mnt/gentoo" /bin/systemctl enable --now NetworkManager
+chroot "/mnt/gentoo" /usr/bin/emerge --oneshot dhcpcd 
 chroot "/mnt/gentoo" /bin/passwd
-useradd -R /mnt/gentoo -m $username
-passwd -R /mnt/gentoo $username
-usermod -R /mnt/gentoo -aG wheel $username
 chroot "/mnt/gentoo" /bin/systemd-firstboot --prompt --setup-machine-id 
 chroot "/mnt/gentoo" /bin/systemctl preset-all
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot net-wireless/iw net-wireless/iwd net-wireless/wpa_supplicant
 chroot "/mnt/gentoo" /bin/systemctl enable --now iwd
+chroot "/mnt/gentoo" /bin/systemctl enable --now dhcpcd
 echo 'GRUB_PLATFORMS="efi-64"' >> /mnt/gentoo/etc/portage/make.conf
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot --verbose sys-boot/grub
 chroot "/mnt/gentoo" /usr/bin/emerge --update --newuse --verbose sys-boot/grub
