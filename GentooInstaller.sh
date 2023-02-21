@@ -114,7 +114,7 @@ chroot "/mnt/gentoo" /usr/bin/emerge --autounmask=y --autounmask-write sys-kerne
 chroot "/mnt/gentoo" /usr/sbin/dispatch-conf
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot sys-kernel/linux-firmware
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot genkernel
-chroot "/mnt/gentoo" /usr/bin/genfstab -U / > /etc/fstab
+chroot "/mnt/gentoo" /usr/bin/genfstab -U / > /mnt/gentoo/etc/fstab
 chroot "/mnt/gentoo" /usr/bin/genkernel all
 
 echo "Write hostname: "
@@ -122,7 +122,7 @@ read hostname
 if [ -z $hostname ]; then
 	echo "Selected one by default... Continue... "
 else
-	echo "Selected: $(hostname)"
+	echo "Selected: $hostname"
 echo $hostname > /mnt/gentoo/etc/hostname
 chroot "/mnt/gentoo" /usr/bin/emerge --oneshot dhcpcd 
 chroot "/mnt/gentoo" /bin/passwd
@@ -138,7 +138,7 @@ chroot "/mnt/gentoo" /usr/sbin/grub-install --target=x86_64-efi --efi-directory=
 chroot "/mnt/gentoo" /usr/sbin/grub-mkconfig -o /boot/grub/grub.cfg
 wget https://raw.githubusercontent.com/hhk02/GentooBaseInstaller/main/postinstaller.sh
 chmod 777 postinstaller.sh
-cp postinsaller.sh /bin/
+mv postinstaller.sh /bin/
 fi
 echo "Installation complete!"
 echo "Please reboot the installer and write in the terminal postinstaller.sh as root for run post installation!"
